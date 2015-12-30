@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<config>
+
+    <!-- 配置线程数 -->
+    <poolsize>4</poolsize>
+
+    <!-- 配置数据源根目录 -->
+    <source>./doc/创客网页/</source>
+
+    <!-- 配置类别目录名及对应的解析类 -->
+    <categories>
+
+        <category name="news">
+            cn.edu.njnu.infoextract.impl.ExtractNews
+        </category>
+
+        <category name="projects">
+            cn.edu.njnu.infoextract.impl.ExtractProjects
+        </category>
+
+        <category name="incubators">
+            cn.edu.njnu.infoextract.impl.incubators.ExtractIncubators
+        </category>
+
+        <category name="activities">
+            cn.edu.njnu.infoextract.impl.activities.main_process.ExtractActivities
+        </category>
+
+    </categories>
+
+</config>
