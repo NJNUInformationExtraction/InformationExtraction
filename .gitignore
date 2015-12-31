@@ -38,7 +38,7 @@ out
 *.mk
 *.txt
 Makefile
-*.xml
+#*.xml#
 
 # document and pdf #
 *.pdf
