@@ -14,6 +14,5 @@ public class Tool_Process_Repetion {
             new_simple_info.setAddress(value);
 
         }
-        //return new_simple_info;
     }
 }
