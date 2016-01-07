@@ -1,10 +1,13 @@
 package cn.edu.njnu.infoextract.impl.activities.Tool;
 
-public class Tool_Rule_Store {
+import java.io.IOException;
 
-    public String content_div_rule() {
+public class Tool_Rule_Store {
+	
+	String files_direction="src\\cn\\edu\\njnu\\infoextract\\impl\\activities\\rule_store\\";
+    public String content_div_rule()  {
         //div id="content"
-        return "div[id=event_desc_page],div[id=link-report],div[id=content]";
+    return Tool_File.assemble_rule(files_direction+"content_div_rule");
     }
 
     public String content_p_rule() {
@@ -13,11 +16,12 @@ public class Tool_Rule_Store {
 
     public String introduction_div_rule() {
         //ul class="search-events-list"
-        return "div[class~=(media-body*)],div[class~=(event-info*)],div[class~=(post-titles entry-header*)]";
+    	return Tool_File.assemble_rule(files_direction+"introduction_div_rule");
     }
 
     public String introduction_clear_rule() {
-        return "div:has(h2),div:has(h1)";
+        return Tool_File.assemble_rule(files_direction+"introduction_clear_rule");
+      
     }
 
     public String introduction_em_rule() {
@@ -29,19 +33,18 @@ public class Tool_Rule_Store {
     }
 
     public String introduction_span_rule() {
-        return "span[class~=(p1*)]";
+    	return Tool_File.assemble_rule(files_direction+"introduction_span_rule");
+        
     }
 
     public String introduction_list_div_rule() {
         // TODO Auto-generated method stub
-        return "ul[class~=(search-events-list*)]";
+    	return Tool_File.assemble_rule(files_direction+"introduction_list_div_rule");
     }
 
     public String introduction_list_clear_rule() {
         // TODO Auto-generated method stub
-        //li class="search-list-entry"
-//		return "li[class~=(search-list-entry*)]";
-//		div class="info"
+
         return "div[class~=(info*)]";
     }
 
@@ -55,5 +58,10 @@ public class Tool_Rule_Store {
         String[] key_Array_list = {"时间", "地点", "分类"};
         return key_Array_list;
     }
+
+	public String content_pic_rule() {
+		// TODO Auto-generated method stub
+		return "img[title~=屏幕快照]";
+	}
 
 }

@@ -3,9 +3,10 @@ package cn.edu.njnu.infoextract.impl.activities.main_process;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.jsoup.Jsoup;
+
 import cn.edu.njnu.domain.Extractable;
 import cn.edu.njnu.infoextract.InfoExtract;
-
 import cn.edu.njnu.infoextract.impl.activities.Active_Web_Extract.Active_HTML_Extract;
 
 /**
@@ -16,7 +17,8 @@ public class ExtractActivities extends InfoExtract {
 
     @Override
     public List<Extractable> extractInformation(String html) {
-        getDOM(html);
+        //getDOM(html);
+        root=Jsoup.parse(html);
         List<Extractable> result = new ArrayList<>();
 
         Active_HTML_Extract active_Extract = new Active_HTML_Extract();
