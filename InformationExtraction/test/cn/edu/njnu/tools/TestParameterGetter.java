@@ -12,7 +12,7 @@ public class TestParameterGetter {
 
     @Test
     public void testParameterGetter() {
-        ParameterGetter helper = new ParameterGetter();
+        ParameterHelper helper = new ParameterHelper();
         System.out.println(helper.getPoolsize());
         System.out.println(helper.getRootFile());
         for (Pair<String, String> pair : helper) {
