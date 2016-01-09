@@ -14,7 +14,7 @@ import java.util.List;
  * Created by Zhi on 12/27/2015.
  * 用于封装congfig.xml配置文件中的参数并提供访问的接口
  */
-public class ParameterGetter implements Iterable<Pair<String, String>> {
+public class ParameterHelper implements Iterable<Pair<String, String>> {
 
     //线程池的最大线程数量
     private int poolsize;
@@ -22,27 +22,52 @@ public class ParameterGetter implements Iterable<Pair<String, String>> {
     //抽取信息的根目录
     private String rootFile;
 
+    //抽取判重日志文件
+    private String outputFile;
+
+    //抽取地点pid文件
+    private String places;
+
+    private String postPlaceURL;
+
+    private String postDataURL;
+
     //类别目录名及对应的解析类
     private List<Pair<String, String>> list = new ArrayList<>();
 
     /**
      * default constructor
      */
-    public ParameterGetter() {
+    public ParameterHelper() {
         try {
             SAXReader reader = new SAXReader();
             Document doc = reader.read(new File(
                     Main.class.getResource("/config.xml").getPath()));
             Element root = doc.getRootElement();
+
+            Element extractLog = root.element("output");
+            this.outputFile = extractLog.getText().replaceAll("\n", "").trim();
+
+            Element places = root.element("places");
+            this.places = places.getText().replaceAll("\n", "").trim();
+
             Element poolsize = root.element("poolsize");
             this.poolsize = Integer.valueOf(poolsize.getText().replaceAll("\n", "").trim());
+
             Element rootFile = root.element("source");
             this.rootFile = rootFile.getText().replaceAll("\n", "").trim();
+
             Element categories = root.element("categories");
             List<Element> nodes = categories.elements();
             nodes.forEach(node -> list.add(new Pair<>(
                     node.attribute("name").getText().replaceAll("\n", "").trim(),
                     node.getText().replaceAll("\n", "").trim())));
+
+            Element interfaces = root.element("interfaces");
+            nodes = interfaces.elements();
+            this.postPlaceURL = nodes.get(0).getText().replaceAll("\n", "").trim();
+            this.postDataURL = nodes.get(1).getText().replaceAll("\n", "").trim();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -60,10 +85,42 @@ public class ParameterGetter implements Iterable<Pair<String, String>> {
     /**
      * 获得抽取信息的根目录
      *
-     * @return 根目录的绝对路径
+     * @return 根目录的路径
      */
     public String getRootFile() {
         return rootFile;
+    }
+
+    /**
+     * 抽取判重日志文件
+     *
+     * @return 抽取判重日志文件
+     */
+    public String getOutputFile() {
+        return outputFile;
+    }
+
+    /**
+     * 抽取地点pid文件
+     *
+     * @return 抽取地点pid文件
+     */
+    public String getPlaces() {
+        return places;
+    }
+
+    /**
+     * @return 地点上传接口
+     */
+    public String getPostPlaceURL() {
+        return postPlaceURL;
+    }
+
+    /**
+     * @return 数据上传接口
+     */
+    public String getPostDataURL() {
+        return postDataURL;
     }
 
     /**
@@ -85,13 +142,13 @@ public class ParameterGetter implements Iterable<Pair<String, String>> {
 
         @Override
         public boolean hasNext() {
-            return cursor < ParameterGetter.this.list.size();
+            return cursor < ParameterHelper.this.list.size();
         }
 
         @Override
         public Pair<String, String> next() {
             if (hasNext())
-                return ParameterGetter.this.list.get(cursor++);
+                return ParameterHelper.this.list.get(cursor++);
             return null;
         }
 

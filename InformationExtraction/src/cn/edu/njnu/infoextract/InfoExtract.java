@@ -306,4 +306,11 @@ public abstract class InfoExtract {
      */
     public abstract List<Extractable> extractInformation(String html);
 
+    /**
+     * 返回该抽取方法的类型
+     *
+     * @return 类型
+     */
+    public abstract String getType();
+
 }

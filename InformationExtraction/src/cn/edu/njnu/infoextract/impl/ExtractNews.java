@@ -79,6 +79,11 @@ public class ExtractNews extends InfoExtract {
     }
 
     @Override
+    public String getType() {
+        return "新闻资讯";
+    }
+
+    @Override
     public List<Extractable> extractInformation(String html) {
         Document doc = parseHTML(html);
         doc = web_Clean(doc); //网页清洗

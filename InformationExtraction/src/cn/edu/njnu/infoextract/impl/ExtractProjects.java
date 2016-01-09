@@ -34,6 +34,11 @@ public class ExtractProjects extends InfoExtract {
     static String img_url = "";
 
     @Override
+    public String getType() {
+        return "项目";
+    }
+
+    @Override
     public List<Extractable> extractInformation(String html) {
 
         List<Extractable> result = new ArrayList<>();
@@ -60,7 +65,7 @@ public class ExtractProjects extends InfoExtract {
             //element.select("i").remove();
             element.select("span[class~=nav*]").remove();
             element.select("span[class=text-primary fs12]").remove();
-            ///////////////////////img_url = img_URL(element);
+            img_url = img_URL(element);
             //element.select("ul").remove();
             //element.select("ol").remove();
             //System.out.println("\r\n"+(i++)+"\r\n");
@@ -74,8 +79,7 @@ public class ExtractProjects extends InfoExtract {
             if (isdiv) {
                 news.put("内容", content);
                 news.put("时间", time);
-
-                //write_Img(img_url, filename);
+                news.put("图片", img_url);
                 content = "";
                 time = "";
                 isdiv = true;
@@ -233,8 +237,7 @@ public class ExtractProjects extends InfoExtract {
         return false;
     }
 
-    public static String img_URL(Element doc) throws IOException {
-
+    public static String img_URL(Element doc) {
         int width = 0;
         int height = 0;
         int area = 0;

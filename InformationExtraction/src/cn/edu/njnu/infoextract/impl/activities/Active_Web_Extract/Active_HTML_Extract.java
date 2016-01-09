@@ -129,6 +129,8 @@ public class Active_HTML_Extract {
     private static void find_content(Element doc, Activity activity_result) {
         //查找标签为<div id=event_desc_page> <div class="mod" id="link-report">
         Pair<String, String> content_atom = new Pair<>("", "");
+        Pair<String, String> pic_atom = new Pair<>("", "");
+
         Tool_Rule_Store rule_store_tool = new Tool_Rule_Store();
         String div_rule = rule_store_tool.content_div_rule();
         String activity_key;
@@ -136,7 +138,21 @@ public class Active_HTML_Extract {
         Elements content_detail = doc.select(div_rule);
         //System.out.println("有P标签的文字"+p_tag_elements.text());
         String p_rule = rule_store_tool.content_p_rule();
+        String pic_rule = rule_store_tool.content_pic_rule();
+
         Elements p_tag_elements = content_detail.select(p_rule);
+        Elements pic = content_detail.select(pic_rule);
+        if (!pic.isEmpty()) {
+            Element one_pic = pic.get(0);
+            activity_key = "图片地址";
+            activity_value = one_pic.attr("src");
+            pic_atom.key = activity_key;
+            pic_atom.value = activity_value;
+            System.out.println(activity_key + activity_value);
+            activity_result.put(pic_atom);
+            activity_value = "";
+        }
+
         activity_key = "活动内容";
         result.append("活动内容：\n");
         //如果包含在p标签内的
