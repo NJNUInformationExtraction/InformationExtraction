@@ -1,3 +1,4 @@
 div[class~=(media-body*)],
 div[class~=(event-info*)],
-div[class~=(post-titles entry-header*)]
+div[class~=(post-titles entry-header*)],
+div[class~=(wpb_wrapper*)]
