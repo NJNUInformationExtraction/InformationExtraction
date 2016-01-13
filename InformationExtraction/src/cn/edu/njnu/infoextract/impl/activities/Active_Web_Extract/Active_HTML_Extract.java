@@ -22,7 +22,6 @@ public class Active_HTML_Extract {
 
     public Activity Active_Html_Extract(Element doc) {
         Activity active_result = new Activity();
-
         find_active_introduction(doc, active_result);
         find_content(doc, active_result);
 
@@ -136,7 +135,6 @@ public class Active_HTML_Extract {
         String activity_key;
         String activity_value = "";
         Elements content_detail = doc.select(div_rule);
-        //System.out.println("有P标签的文字"+p_tag_elements.text());
         String p_rule = rule_store_tool.content_p_rule();
         String pic_rule = rule_store_tool.content_pic_rule();
 
@@ -157,26 +155,48 @@ public class Active_HTML_Extract {
         result.append("活动内容：\n");
         //如果包含在p标签内的
         if (!p_tag_elements.isEmpty()) {
-            for (Element p_element : p_tag_elements) {
+            int count = 1;
+            while (count < 5 && count < p_tag_elements.size()) {
+                Element p_element = p_tag_elements.get(count);
                 if (!p_element.text().trim().equals("")) {
                     activity_value += p_element.text();
                     result.append(p_element.text() + "\n");
                 }
+                count++;
             }
+//            for (Element p_element :p_tag_elements) {
+//                if (!p_element.text().trim().equals("")) {
+//                    activity_value += p_element.text();
+//                    result.append(p_element.text() + "\n");
+//                }
+//            }
         }
         //没有P标签的处理
         else {
-            String[] content_splits = content_detail.text().split("  ");
-            for (String one_line : content_splits) {
-                result.append(one_line + "\n");
-                activity_value += one_line;
+            String[] content_splits = content_detail.text().split(" ");
+            int count = 1;
+            while (count < 5 && count < content_splits.length) {
+                activity_value += content_splits[count];
+                count++;
             }
+//            for (String one_line : content_splits) {
+//                result.append(one_line + "\n");
+//                int count=1;
+//                if(count<5){
+//                activity_value += one_line;
+//                count++;
+//                }else {
+//                	break;
+//                }
+//            }
         }
-        content_atom.key = activity_key;
-        content_atom.value = activity_value;
+        if (!activity_value.isEmpty()) {
+            content_atom.key = activity_key;
+            content_atom.value = activity_value;
 
-        activity_result.put(content_atom);
-        result.append("\n\n");
+            activity_result.put(content_atom);
+            result.append("\n\n");
+        }
     }
 
     public static void traver(Element root, int depth) {
@@ -187,13 +207,7 @@ public class Active_HTML_Extract {
         Elements elements_in_body = root.children();
 
         for (Element element : elements_in_body) {
-            //输出每个elment的标签
-            //System.out.println("element tag is :"+element.outerHtml());
             String element_text = element.text();
-
-            //search_content
-            //search_content(element_text);
-
             if (reg_match(".+年.*月.*日|.*时间:", element_text) && reg_match(".*北京海淀.*|.*地点|.*广州.*|.*西安.*|.*杭州.*|.*北京.*", element_text)) {
                 System.out.println(element.tagName());
                 if (element.tagName().equals("p") | element.tagName().equals("div")) {
