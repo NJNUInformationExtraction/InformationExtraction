@@ -89,8 +89,13 @@ public class Active_HTML_Extract {
         Elements introduction_clear_div = introduction_div.select(rule_clear_tag);
         for (Element one_introduction_div : introduction_clear_div) {
             System.out.println("------process leaf node-------------");
-            System.out.println(one_introduction_div.val());
+            //System.out.println(one_introduction_div.val());
+            if(one_introduction_div.tagName()=="div"){
             process_leaf_node(one_introduction_div, activity_result);
+            }
+            else if(one_introduction_div.tagName()=="blockquote"){
+            	process_blockquote_node(one_introduction_div,activity_result);
+            }
             System.out.println("------process leaf node--  end!-----------");
         }
     }
@@ -284,6 +289,9 @@ public class Active_HTML_Extract {
 
     }
 
+    public static void process_blockquote_node(Element blockquote_leaf, Activity activity_result) {
+    	process_elements_in_a_div(blockquote_leaf,activity_result);
+    }
     public static void process_leaf_node(Element div_leaf, Activity activity_result) {
         HashMap<Simple_info, String> simple_info_hashmap_single = Simple_info_HashMap.getInstance();
         Simple_info new_simple_info = new Simple_info();
@@ -292,9 +300,14 @@ public class Active_HTML_Extract {
         System.out.println("------找到所在的div之后，输出孩子的信息------");
         for (Element one_element : extract_element) {
             Pair<String, String> new_atom = new Pair<>("", "");
-            System.out.println(one_element);
+//            System.out.println(one_element);
             String active_key = null;
-            if (one_element.tagName().equals("h2") | one_element.tagName().equals("h1") | one_element.className().equals("event-title")) {
+//            System.out.println(one_element.attr("class"));
+            if (one_element.tagName().equals("h2") 
+            		| one_element.tagName().equals("h1") 
+            		| one_element.className().equals("event-title")
+            		| one_element.attr("class").equals("title")) { //judge <div class=title> title </div>
+            	
                 active_key = "活动标题";
                 new_simple_info.setTitle(one_element.text());
             } else {
@@ -302,16 +315,21 @@ public class Active_HTML_Extract {
                 String em_title = rule_store_tool.introduction_em_title_rule();
                 active_key = one_element.select(em).attr(em_title);
                 if (active_key.equals("")) {
+                	
                     String span_rule = rule_store_tool.introduction_span_rule();
                     active_key = one_element.select(span_rule).text();
                     one_element.select(span_rule).remove();
-                    System.out.println("p1" + one_element.select("span").text());
+
+                   // System.out.println("p1" + one_element.select("span").text());
                 }
                 if (active_key.trim().equals("")) {
                     active_key = "其他";
                 }
 
             }
+            
+            if(!active_key.equals("其他"))
+            {
             String active_value = one_element.text();
 
             if (active_key.contains("时间")) {
@@ -319,17 +337,58 @@ public class Active_HTML_Extract {
             } else if (active_key.contains("地点")) {
                 new_simple_info.setAddress(active_value);
             }
-            result.append(active_key + "  " + active_value + "\n");
+            //result.append(active_key + "  " + active_value + "\n");
             new_atom.key = active_key;
             new_atom.value = active_value;
             activity_result.put(new_atom);
         }
         simple_info_hashmap_single.put(new_simple_info, "single_activity");
+        }
         System.out.println("输出孩子节点结束！");
 
     }
 
-    public ArrayList<Activity> Some_Active_Html_Extract(Element doc) {
+    private static void process_elements_in_a_div(Element one_element,
+			Activity activity_result) {
+//      process 
+//      <p><strong>活动时间:</strong>2013年05月21日 [周二] 14:00-17:00</p>
+//      <p><strong>活动地点:</strong>北京-海淀区中关村鼎好大厦A座8层</p>
+//      <p><strong>参与费用:</strong>0元</p>
+
+		Elements child_elments=one_element.children();
+		for(Element child:child_elments){
+			String[] split_child=child.text().split(":");
+			if(split_child.length==1){
+				split_child=child.text().split("：");
+			}
+			if(split_child.length>1){
+				String key=split_child[0];
+				if(key.length()>5){
+					continue;
+				}
+				String value="";
+				if(split_child.length>2){
+					for(int i=1;i<=split_child.length-1;i++){
+						value=value+":"+split_child[i];
+					}
+					value=value+":"+split_child[split_child.length-1];
+				}
+				else {
+					value=split_child[1];
+				}
+				Pair<String, String> new_atom = new Pair<>("", "");
+				new_atom.key = key;
+				new_atom.value =value;
+				activity_result.put(new_atom);
+			}
+			
+			
+		}
+		
+    	
+	}
+
+	public ArrayList<Activity> Some_Active_Html_Extract(Element doc) {
         // TODO Auto-generated method stub
 
         System.out.println("start processed some_activiety webpage");
