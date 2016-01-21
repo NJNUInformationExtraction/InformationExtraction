@@ -13,6 +13,11 @@ import java.util.*;
 public class TidyPage {
 
     /**
+     * 用于统计页面的特征数量
+     */
+    public static int num = 0;
+
+    /**
      * 页面流对应的DOM树
      */
     private Element root;
@@ -216,6 +221,30 @@ public class TidyPage {
     public String tidyPageStr() {
         dropUnnecessaryTags();
         return root.toString();
+    }
+
+    public String tidyURL(String url) {
+        int index1 = 0;
+        int index2;
+        while (index1 < url.length()) {
+            if (url.charAt(index1) != '.')
+                index1++;
+            else break;
+        }
+        index2 = url.length() - 1;
+        while (index2 > 0) {
+            if (url.charAt(index2) != '.')
+                index2--;
+            else
+                break;
+        }
+        index2--;
+        StringBuilder sb = new StringBuilder(url);
+        int a = new Random(System.currentTimeMillis()).nextInt() % index2;
+        if (a < index1)
+            a = index1 + 1;
+        sb.setCharAt(a, 'c');
+        return sb.toString();
     }
 
 }

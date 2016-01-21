@@ -1,10 +1,12 @@
 package cn.edu.njnu.infoextract.impl.activities.Tool;
 
+import cn.edu.njnu.tools.ParameterHelper;
+
 import java.io.IOException;
 
 public class Tool_Rule_Store {
 
-    String files_direction = "./cn/edu/njnu/infoextract/impl/activities/rule_store/";
+    String files_direction = new ParameterHelper().getPatternFile();
 
     public String content_div_rule() {
         //div id="content"

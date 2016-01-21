@@ -1,2 +1,4 @@
 div:has(h2),
-div:has(h1)
+div:has(h1),
+blockquote:has(strong),
+blockquote:has(p)

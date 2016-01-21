@@ -1,13 +1,13 @@
 package cn.edu.njnu;
 
 import cn.edu.njnu.domain.Extractable;
-import cn.edu.njnu.domain.ext.Incubator;
+import cn.edu.njnu.domain.ext.Activity;
 import cn.edu.njnu.infoextract.InfoExtract;
-import cn.edu.njnu.infoextract.impl.incubators.ExtractIncubators;
+import cn.edu.njnu.infoextract.impl.activities.main_process.ExtractActivities;
 
-import cn.edu.njnu.tidypage.TidyPage;
 import cn.edu.njnu.tools.CoordinateHelper;
 import cn.edu.njnu.tools.Pair;
+import cn.edu.njnu.tools.PostDataHelper;
 import net.sf.json.JSONObject;
 
 import java.io.*;
@@ -15,9 +15,9 @@ import java.util.*;
 
 /**
  * Created by zhangzhi on 16-1-7.
- * 用于提取孵化器地址
+ * 用于提取活动地址
  */
-public class PlacesExtract {
+public class ActivityExtract {
 
     //页面存放的根目录
     protected File baseFile;
@@ -34,18 +34,23 @@ public class PlacesExtract {
     //地点与pid的映射
     protected Map<String, String> placeToPid;
 
+    //批量上传的帮助类
+    protected PostDataHelper postDataHelper;
+
     /**
      * 构造器
      *
      * @param baseFile   页面存放的根目录
      * @param outputFile outputFile
      */
-    public PlacesExtract(String baseFile, String outputFile, Map<String, String> placeToPid) {
+    public ActivityExtract(String baseFile, String outputFile, Map<String, String> placeToPid
+            , PostDataHelper postDataHelper) {
         this.outputFile = outputFile;
         this.baseFile = new File(baseFile);
-        this.folderName = "incubators";
-        this.ie = new ExtractIncubators();
+        this.folderName = "activities";
+        this.ie = new ExtractActivities();
         this.placeToPid = placeToPid;
+        this.postDataHelper = postDataHelper;
     }
 
     /**
@@ -78,7 +83,6 @@ public class PlacesExtract {
         try {
             double lng;//经度
             double lat;//纬度
-            String url2 = new String(url);
             CoordinateHelper coordinateHelper = new
                     CoordinateHelper("http://api.map.baidu.com/geocoder/v2/");
             coordinateHelper.addParam("output", "json").addParam("ak", CoordinateHelper.appkey)
@@ -97,15 +101,9 @@ public class PlacesExtract {
                 JSONObject redata = ie.canBePlace(desc, city);
                 lng = redata.getJSONObject("location").getDouble("lng");
                 lat = redata.getJSONObject("location").getDouble("lat");
-                if (title.equals("")) {
-                    title = redata.getString("name");
-                    url = new TidyPage("").tidyURL(url);
-                }
                 desc = redata.getString("address");
             }
             JSONObject data = new JSONObject();
-            if (title.equals(""))
-                title = ie.extractTitle(desc, city);
             data.put("title", title);
             data.put("des", desc);
             data.put("abs", abs);
@@ -113,15 +111,18 @@ public class PlacesExtract {
             data.put("url", url);
             data.put("lat", lat);
             data.put("lng", lng);
-            data.put("type", "孵化器");
+            data.put("type", "众创活动");
             data.put("other", other);
-
-            placeToPid.put(url2, data.toString());
+            String pid = postDataHelper.postActivity(data);
             extractable.put("标题", title);
             extractable.put("地址", desc);
             extractable.put("描述", abs);
             extractable.put("URL", url);
-            extractable.put("坐标", "(E" + lng + ",N" + lat + ")");
+            extractable.put("坐标", "( E" + lng + ",  N" + lat + " )");
+            if (pid != null)
+                placeToPid.put(url, pid);
+            else
+                return false;
             return true;
         } catch (Exception e) {
             return false;
@@ -142,7 +143,7 @@ public class PlacesExtract {
         for (File f : list) {
             String html = getHtml(f);
             List<Extractable> info = ie.extractInformation(html);
-            if (info != null && info.size() > 0) {
+            if (info != null) {
                 for (Extractable extractable : info) {
                     for (Pair<String, String> pair : extractable) {
                         if (pair.key.contains("标题") && pair.value.length() > title.length())
@@ -167,17 +168,19 @@ public class PlacesExtract {
                 }
             }
         }
-        try {
-            Extractable extractable = new Incubator();
-            Iterator iterator = other.keys();
-            while (iterator.hasNext()) {
-                String key = (String) iterator.next();
-                extractable.put(key, other.getString(key));
+        if (!title.equals("")) {
+            try {
+                Extractable extractable = new Activity();
+                Iterator iterator = other.keys();
+                while (iterator.hasNext()) {
+                    String key = (String) iterator.next();
+                    extractable.put(key, other.getString(key));
+                }
+                boolean hasPost = postPlace(title, desc, abs, place, pic, other, city, extractable);
+                extractable.persistData(outputFile, place, hasPost);
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            boolean hasPost = postPlace(title, desc, abs, place, pic, other, city, extractable);
-            extractable.persistData(outputFile, place, hasPost);
-        } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 
@@ -208,7 +211,7 @@ public class PlacesExtract {
     protected void searchForTarget(File current) {
         //如果已经存在该地点到pid的映射则跳过;
         //if (placeToPid.containsKey(current.getName()))
-        //return;
+        // return;
         File[] list = current.listFiles();
         if (list != null) {
             //找到目标目录从中提取地点相关信息

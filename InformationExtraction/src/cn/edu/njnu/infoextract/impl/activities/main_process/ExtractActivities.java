@@ -16,11 +16,6 @@ import cn.edu.njnu.infoextract.impl.activities.Active_Web_Extract.Active_HTML_Ex
 public class ExtractActivities extends InfoExtract {
 
     @Override
-    public String getType() {
-        return "众创活动";
-    }
-
-    @Override
     public List<Extractable> extractInformation(String html) {
         //getDOM(html);
         root = Jsoup.parse(html);
@@ -38,4 +33,10 @@ public class ExtractActivities extends InfoExtract {
 
         return result;
     }
+
+    @Override
+    public String getType() {
+        return "众创活动";
+    }
+
 }

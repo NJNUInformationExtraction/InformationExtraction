@@ -1,15 +1,14 @@
 package cn.edu.njnu.tools;
 
 /**
- * Created by Zhi on 12/27/2015.
- * 抽取的一个键值对单元数据
+ * Created by Zhi on 12/27/2015. 抽取的一个键值对单元数据
  */
 public class Pair<K, V> {
 
-    //单元数据的键
+    // 单元数据的键
     public K key;
 
-    //单元数据的值
+    // 单元数据的值
     public V value;
 
     /**
@@ -21,6 +20,10 @@ public class Pair<K, V> {
     public Pair(K key, V value) {
         this.key = key;
         this.value = value;
+    }
+
+    public String toString() {
+        return key.toString() + ":" + value.toString() + "\n";
     }
 
 }

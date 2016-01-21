@@ -2,19 +2,29 @@ package cn.edu.njnu.infoextract;
 
 import cn.edu.njnu.domain.Extractable;
 import cn.edu.njnu.tidypage.PreProcess;
+
+import static cn.edu.njnu.tools.CoordinateHelper.authority;
+
 import cn.edu.njnu.tidypage.TidyPage;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
+
+import static cn.edu.njnu.infoextract.impl.incubators.PatternStore.page;
+
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.jsoup.nodes.Element;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.nio.charset.Charset;
 import java.util.*;
+
+import static cn.edu.njnu.tidypage.TidyPage.num;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,6 +38,7 @@ public abstract class InfoExtract {
      * 所处理的DOM根节点
      */
     protected Element root;
+
     /**
      * 从<title></title>标签抽取出来的该页面的题目(主题)
      */
@@ -201,23 +212,21 @@ public abstract class InfoExtract {
      */
     protected String getResponseFromRequest(String request) throws IOException {
         HttpGet get = new HttpGet(request);
-        try {
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
             //使用apache的开源网络工具箱请求语料库数据
-            HttpClient http = new DefaultHttpClient();
-            HttpResponse response = http.execute(get);
+            HttpResponse response = httpClient.execute(get);
             if (response.getStatusLine().getStatusCode() == 200) {
                 HttpEntity entity = response.getEntity();
                 InputStream in = entity.getContent();
-                byte[] buffer = new byte[4096];
-                int hasread;
-                String data;
-                if ((hasread = in.read(buffer)) > 0) {
-                    data = new String(buffer, 0, hasread);
-                    return data;
-                } else
-                    return null;
-            }
-            return null;
+                StringBuilder sb = new StringBuilder();
+                Charset utf8 = Charset.forName("UTF-8");
+                byte[] buffer = new byte[1024];
+                int hasRead;
+                while ((hasRead = in.read(buffer)) > 0)
+                    sb.append(new String(buffer, 0, hasRead, utf8));
+                return sb.toString();
+            } else
+                return null;
         } finally {
             get.releaseConnection();
         }
@@ -230,18 +239,23 @@ public abstract class InfoExtract {
      * @param type 地址或地名,地址为true,地名为false
      * @return 抽取的可能的地址或地名的字符串
      */
-    protected String[] getJsonInfo(String json, boolean type) {
+    protected JSONObject getJsonInfo(String json, boolean type) {
         JSONObject jsonObj = JSONObject.fromObject(json);
         JSONArray array = jsonObj.getJSONArray("results");
-        String[] list = new String[array.length()];
-        for (int i = 0; i < array.length(); i++) {
-            JSONObject item = array.getJSONObject(i);
-            if (type)
-                list[i] = item.getString("address");
-            else
-                list[i] = item.getString("name");
+        while (true) {
+            JSONObject item = array.getJSONObject(num++);
+            if (num == array.length()) {
+                num = 0;
+                page++;
+            }
+            if (!item.getString("name").contains("路") &&
+                    !item.getString("name").contains("街") &&
+                    !item.getString("name").contains("号") &&
+                    !item.getString("name").contains("厂") &&
+                    !item.getString("name").contains("村") &&
+                    !item.getString("name").contains("小区"))
+                return item;
         }
-        return list;
     }
 
     /**
@@ -281,24 +295,56 @@ public abstract class InfoExtract {
      * @param city 查找的城市(必须给出此字段,否则该方法达不到预期效果)
      * @return 是否是一个地点
      */
-    protected boolean canBePlace(String item, String city) throws IOException {
-        final String appkey = "dnHbgky1GB0HMRt7GReO0Sxp";
+    public JSONObject canBePlace(String item, String city) throws IOException {
+        while (true) {
+            String request = "http://api.map.baidu.com/place/v2/search?" +
+                    "q=创业" + "&region=" + city + "&output=json&ak=" + authority
+                    + "&page_num=" + page;
+            String response = getResponseFromRequest(request);
+            if (response != null && JSONObject.fromObject(response).getInt("total") != 0)
+                return getJsonInfo(response, true);
+            else
+                page = 0;
+        }
+    }
+
+    /**
+     * 从给定的字符串搜索语料库中对应的地理名称
+     *
+     * @param desc 给定的字符串
+     * @param city 查找的城市
+     * @return 语料库中的地理名称
+     * @throws IOException
+     */
+    public String extractTitle(String desc, String city) throws IOException {
+        int currentPage = 0;
+        int currentItem = 0;
+        int loop = 10;
         String request = "http://api.map.baidu.com/place/v2/search?" +
-                "q=" + item + "&region=" + city + "&output=json&ak=" + appkey;
-        String response = getResponseFromRequest(request);
-        String[] places;
-        String[] addresses;
-        if (response != null) {
-            addresses = getJsonInfo(response, true);
-            places = getJsonInfo(response, false);
-            for (int i = 0; i < places.length; i++) {
-                if (isSimilar(item, places[i]))
-                    return true;
-                if (isSimilar(item, addresses[i]))
-                    return true;
+                "q=创业" + "&region=" + city + "&output=json&ak=" + authority
+                + "&page_num=" + currentPage;
+        while (loop-- > 0) {
+            if (page > 0) {
+                currentPage = new Random(System.currentTimeMillis()).nextInt(page);
+                request = "http://api.map.baidu.com/place/v2/search?" +
+                        "q=创业" + "&region=" + city + "&output=json&ak=" + authority
+                        + "&page_num=" + currentPage;
+            }
+            String response = getResponseFromRequest(request);
+            if (response != null) {
+                JSONObject jsonObj = JSONObject.fromObject(response);
+                JSONArray array = jsonObj.getJSONArray("results");
+                if (array.length() > 0)
+                    currentItem = new Random(System.currentTimeMillis()).nextInt(array.length());
+                JSONObject item = array.getJSONObject(currentItem);
+                if (!item.getString("name").contains("路") &&
+                        !item.getString("name").contains("街") &&
+                        !item.getString("name").contains("号") &&
+                        !item.getString("name").contains("厂"))
+                    return item.getString("name");
             }
         }
-        return false;
+        return "北京创客孵化器";
     }
 
     /**

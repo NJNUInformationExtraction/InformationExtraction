@@ -17,7 +17,7 @@ import java.util.List;
  * 根据地点名称获取坐标
  */
 public class CoordinateHelper {
-    public static String appkey = "dnHbgky1GB0HMRt7GReO0Sxp";
+    public static String appkey = "zfdCXSEt8MlN7AwBkqrOMYEn";
     public static String REQ_METHOD_GET = "GET";
     public static String REQ_METHOD_POST = "POST";
 //	public static String REQ_METHOD_HEAD = "HEAD";
@@ -170,6 +170,7 @@ public class CoordinateHelper {
         }
     }
 
+    public static String authority = appkey;
 
     /**
      * 获取返回数据

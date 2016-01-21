@@ -5,18 +5,28 @@
     <!-- 配置线程数 -->
     <poolsize>3</poolsize>
 
-    <!-- 配置数据源根目录 -->
+    <!-- 配置数据源根目录路径 -->
     <source>
         /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/data/
     </source>
 
-    <!-- 配置输出目录 -->
+    <!-- 配置抽取数据本地输出目录路径 -->
     <output>
         /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/result/
     </output>
 
-    <!-- 配置地点存放文件 -->
-    <places>./places</places>
+    <!-- 配置地点存放文件路径 -->
+    <incubatorsPlaces>
+        /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/IncubatorsPlaces
+    </incubatorsPlaces>
+
+    <activitiesPlaces>
+        /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/ActivitiesPlaces
+    </activitiesPlaces>
+
+    <pattern>
+        /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/cn/edu/njnu/infoextract/impl/activities/rule_store/
+    </pattern>
 
     <!-- 配置类别目录名及对应的解析类 -->
     <categories>
@@ -33,21 +43,17 @@
             cn.edu.njnu.infoextract.impl.activities.main_process.ExtractActivities
         </category>
 
-        <category name="incubators">
-            cn.edu.njnu.infoextract.impl.incubators.ExtractIncubators
-        </category>
-
     </categories>
 
     <!-- 配置数据库交互接口 -->
     <interfaces>
 
-        <!-- 提交地点 -->
+        <!-- 上传地点 -->
         <interface type="postPlaceURL">
             http://101.201.143.103:8080/ZC/data/port/putSinglePositionData
         </interface>
 
-        <!-- 提交数据项 -->
+        <!-- 上传内容 -->
         <interface type="postDataURL">
             http://101.201.143.103:8080/ZC/data/port/PutMultiACSData
         </interface>

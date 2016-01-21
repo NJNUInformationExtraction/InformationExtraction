@@ -17,7 +17,7 @@ public class Project extends Extractable {
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
                 new FileOutputStream(file, true), "UTF-8"))) {
 
-            bw.write("**************" + url + "********************" + hasPost);
+            bw.write("**************" + url + "********************是否成功提交数据库:" + hasPost);
             bw.newLine();
             for (Pair pair : data) {
                 bw.write(pair.key + ":" + pair.value);

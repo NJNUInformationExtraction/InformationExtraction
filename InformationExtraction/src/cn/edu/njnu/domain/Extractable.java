@@ -23,6 +23,12 @@ public abstract class Extractable implements Iterable<Pair<String, String>> {
      * @param value 字段对应的值
      */
     public void put(String key, String value) {
+        for (int i = 0; i < data.size(); i++) {
+            if (key.equals(data.get(i).key)) {
+                data.set(i, new Pair<>(key, value));
+                return;
+            }
+        }
         this.data.add(new Pair<>(key, value));
     }
 
@@ -32,7 +38,27 @@ public abstract class Extractable implements Iterable<Pair<String, String>> {
      * @param pair 键值对
      */
     public void put(Pair<String, String> pair) {
+        for (int i = 0; i < data.size(); i++) {
+            if (pair.key.equals(data.get(i).key)) {
+                data.set(i, pair);
+                return;
+            }
+        }
         this.data.add(pair);
+    }
+
+    /**
+     * 根据键值得到对应的value
+     *
+     * @param key 键值
+     * @return 对应的value
+     */
+    public String get(String key) {
+        for (Pair<String, String> pair : data) {
+            if (pair.key.equals(key))
+                return pair.value;
+        }
+        return null;
     }
 
     /**
@@ -40,10 +66,10 @@ public abstract class Extractable implements Iterable<Pair<String, String>> {
      *
      * @param outputFile 待输出的文件
      * @param url        网页文件的URL
-     * @param hasPost    是否成功提交远程数据库
      * @throws IOException
      */
-    public abstract void persistData(String outputFile, String url, boolean hasPost) throws IOException;
+    public abstract void persistData(String outputFile, String url, boolean hasPost)
+            throws IOException;
 
     /**
      * 得到迭代器

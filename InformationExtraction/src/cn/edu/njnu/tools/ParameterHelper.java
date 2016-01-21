@@ -1,6 +1,6 @@
 package cn.edu.njnu.tools;
 
-import cn.edu.njnu.Main;
+import cn.edu.njnu.ExtractModule;
 import org.dom4j.Document;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
@@ -22,18 +22,25 @@ public class ParameterHelper implements Iterable<Pair<String, String>> {
     //抽取信息的根目录
     private String rootFile;
 
-    //抽取判重日志文件
+    //抽取数据本地输出目录路径
     private String outputFile;
 
-    //抽取地点pid文件
-    private String places;
+    //抽取孵化器地点与pid映射文件
+    private String incubatorsPlaces;
 
+    //抽取活动地点与pid映射文件
+    private String activitiesPlaces;
+
+    //上传地点数据的接口地址
     private String postPlaceURL;
 
+    //上传内容数据的接口地址
     private String postDataURL;
 
+    private String patternFile;
+
     //类别目录名及对应的解析类
-    private List<Pair<String, String>> list = new ArrayList<>();
+    public List<Pair<String, String>> list = new ArrayList<>();
 
     /**
      * default constructor
@@ -42,20 +49,26 @@ public class ParameterHelper implements Iterable<Pair<String, String>> {
         try {
             SAXReader reader = new SAXReader();
             Document doc = reader.read(new File(
-                    Main.class.getResource("/config.xml").getPath()));
+                    ExtractModule.class.getResource("/config.xml").getPath()));
             Element root = doc.getRootElement();
 
             Element extractLog = root.element("output");
             this.outputFile = extractLog.getText().replaceAll("\n", "").trim();
 
-            Element places = root.element("places");
-            this.places = places.getText().replaceAll("\n", "").trim();
+            Element incubatorsPlaceslaces = root.element("incubatorsPlaces");
+            this.incubatorsPlaces = incubatorsPlaceslaces.getText().replaceAll("\n", "").trim();
+
+            Element activitiesPlaces = root.element("activitiesPlaces");
+            this.activitiesPlaces = activitiesPlaces.getText().replaceAll("\n", "").trim();
 
             Element poolsize = root.element("poolsize");
             this.poolsize = Integer.valueOf(poolsize.getText().replaceAll("\n", "").trim());
 
             Element rootFile = root.element("source");
             this.rootFile = rootFile.getText().replaceAll("\n", "").trim();
+
+            Element patternFile = root.element("pattern");
+            this.patternFile = patternFile.getText().replaceAll("\n", "").trim();
 
             Element categories = root.element("categories");
             List<Element> nodes = categories.elements();
@@ -92,21 +105,21 @@ public class ParameterHelper implements Iterable<Pair<String, String>> {
     }
 
     /**
-     * 抽取判重日志文件
+     * 抽取数据本地输出目录路径
      *
-     * @return 抽取判重日志文件
+     * @return 抽取数据本地输出目录路径
      */
     public String getOutputFile() {
         return outputFile;
     }
 
-    /**
-     * 抽取地点pid文件
-     *
-     * @return 抽取地点pid文件
-     */
-    public String getPlaces() {
-        return places;
+
+    public String getIncubatorsPlaces() {
+        return incubatorsPlaces;
+    }
+
+    public String getActivitiesPlaces() {
+        return activitiesPlaces;
     }
 
     /**
@@ -121,6 +134,13 @@ public class ParameterHelper implements Iterable<Pair<String, String>> {
      */
     public String getPostDataURL() {
         return postDataURL;
+    }
+
+    /**
+     * @return 模式的地址
+     */
+    public String getPatternFile() {
+        return patternFile;
     }
 
     /**
