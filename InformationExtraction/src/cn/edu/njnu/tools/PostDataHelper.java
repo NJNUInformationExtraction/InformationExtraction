@@ -92,14 +92,13 @@ public class PostDataHelper {
      * 上传数据的三个方法
      */
 
-    public String postIncubator(String place) {
-        String data = placeToPid.get(place);
+    public String postIncubator(String jsonString) {
         try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 
             HttpPost method = new HttpPost(new ParameterHelper().getPostPlaceURL());
             //生成参数对
             List<NameValuePair> params = new ArrayList<>();
-            params.add(new BasicNameValuePair("data", data));
+            params.add(new BasicNameValuePair("data", jsonString));
             UrlEncodedFormEntity entity = new UrlEncodedFormEntity(params, "UTF-8");
             method.setEntity(entity);
 
@@ -111,9 +110,7 @@ public class PostDataHelper {
             if (resJson.getInt("code") == 1) {
                 JSONObject result2 = resJson.getJSONObject("data");
                 if (result2.getInt("status") == 1) {
-                    String pid = result2.getString("pid");
-                    placeToPid.put(place, pid);
-                    return pid;
+                    return result2.getString("pid");
                 } else
                     return null;
             } else {

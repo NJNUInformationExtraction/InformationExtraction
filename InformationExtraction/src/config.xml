@@ -7,25 +7,25 @@
 
     <!-- 配置数据源根目录路径 -->
     <source>
-        /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/data/
+        /home/zhangzhi/Documents/graduation_design/code/team//InformationExtraction/out/production/InformationExtraction/data/
     </source>
 
     <!-- 配置抽取数据本地输出目录路径 -->
     <output>
-        /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/result/
+        /home/zhangzhi/Documents/graduation_design/code/team/InformationExtraction/out/production/InformationExtraction/result/
     </output>
 
     <!-- 配置地点存放文件路径 -->
     <incubatorsPlaces>
-        /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/IncubatorsPlaces
+        /home/zhangzhi/Documents/graduation_design/code/team/InformationExtraction/out/production/InformationExtraction/IncubatorsPlaces
     </incubatorsPlaces>
 
     <activitiesPlaces>
-        /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/ActivitiesPlaces
+        /home/zhangzhi/Documents/graduation_design/code/team/InformationExtraction/out/production/InformationExtraction/ActivitiesPlaces
     </activitiesPlaces>
 
     <pattern>
-        /home/zhangzhi/Documents/graduation_design/code/InformationExtraction(Single)/out/production/InformationExtraction/cn/edu/njnu/infoextract/impl/activities/rule_store/
+        /home/zhangzhi/Documents/graduation_design/code/team/InformationExtraction/out/production/InformationExtraction/cn/edu/njnu/infoextract/impl/activities/rule_store/
     </pattern>
 
     <!-- 配置类别目录名及对应的解析类 -->
