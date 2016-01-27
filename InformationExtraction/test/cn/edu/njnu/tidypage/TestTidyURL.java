@@ -2,14 +2,15 @@ package cn.edu.njnu.tidypage;
 
 import org.junit.Test;
 
-/**
- * Created by zhangzhi on 16-1-17.
- */
+import java.util.Random;
+
 public class TestTidyURL {
 
     @Test
     public void testURLTidy() {
-        System.out.print(new TidyPage("").tidyURL("www.baidu.com"));
+        int item = new Random(System.currentTimeMillis()).nextInt(4);
+        System.out.println(item);
+        System.out.print(new TidyPage("").tidyURL("incubator.pkusp.com.cn"));
     }
 
 }

@@ -37,6 +37,6 @@ public class TestPostContent {
         new ProcessUnit(
                 new Pair<>("news", "cn.edu.njnu.infoextract.impl.ExtractNews"),
                 null, null, null, postDataHelper, null).postData(info, "", "");
-        postDataHelper.post();
+        //postDataHelper.post();
     }
 }

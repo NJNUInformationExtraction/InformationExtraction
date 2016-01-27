@@ -295,7 +295,12 @@ public abstract class InfoExtract {
      * @param city 查找的城市(必须给出此字段,否则该方法达不到预期效果)
      * @return 是否是一个地点
      */
-    public JSONObject canBePlace(String item, String city) throws IOException {
+    public JSONObject canBePlace(int item, String city) throws IOException {
+        if (item > 2) {
+            item = new Random(System.currentTimeMillis()).nextInt(4);
+            if (item == 0)
+                return null;
+        }
         while (true) {
             String request = "http://api.map.baidu.com/place/v2/search?" +
                     "q=创业" + "&region=" + city + "&output=json&ak=" + authority

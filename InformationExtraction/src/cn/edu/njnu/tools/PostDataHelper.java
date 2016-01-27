@@ -1,6 +1,5 @@
 package cn.edu.njnu.tools;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -13,9 +12,6 @@ import org.apache.http.util.EntityUtils;
 
 import java.io.IOException;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * Created by zhangzhi on 16-1-12.
@@ -23,69 +19,10 @@ import java.util.concurrent.locks.ReentrantLock;
  */
 public class PostDataHelper {
 
-    //记录各个地点所对应的内容信息
-    Map<String, JSONObject> postMap = new ConcurrentHashMap<>();
-
-    //数据上传日志
-    List<Pair<Date, Boolean>> postLog = new CopyOnWriteArrayList<>();
-
     protected Map<String, String> placeToPid;
 
     public PostDataHelper(Map<String, String> placeToPid) {
         this.placeToPid = placeToPid;
-    }
-
-    /**
-     * 往指定JSONObject里添加一个内容项
-     *
-     * @param pid  地点对应的pid
-     * @param data 待添加的内容项
-     */
-    public void addData(String pid, JSONArray data) {
-        ReentrantLock lock = new ReentrantLock();
-        if (postMap.containsKey(pid)) {
-            try {
-                lock.lock();
-                JSONObject json = postMap.get(pid);
-                JSONArray array = json.getJSONArray("acs");
-                for (int i = 0; i < data.length(); i++)
-                    array.put(data.get(i));
-                //数据量大于30则触发批量上传
-                if (array.length() > 30)
-                    post(pid);
-            } finally {
-                lock.unlock();
-            }
-        } else {
-            JSONObject json = new JSONObject();
-            json.put("acs", data);
-            postMap.put(pid, json);
-        }
-    }
-
-    /**
-     * 打印日志
-     */
-    public void printLog() {
-        System.out.println(postLog);
-    }
-
-    protected void post(String pid) {
-        JSONObject data = postMap.get(pid);
-        postMap.remove(pid);
-        new Thread(() -> {
-            postContent(data);
-        });
-    }
-
-    /**
-     * 批量上传数据
-     */
-    public void post() {
-        Set<String> keySet = postMap.keySet();
-        for (String pid : keySet) {
-            postContent(postMap.get(pid));
-        }
     }
 
     /**

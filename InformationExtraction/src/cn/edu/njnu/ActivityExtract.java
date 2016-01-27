@@ -98,7 +98,7 @@ public class ActivityExtract {
                 lng = lc.getDouble("lng");
                 lat = lc.getDouble("lat");
             } else {
-                JSONObject redata = ie.canBePlace(desc, city);
+                JSONObject redata = ie.canBePlace(desc.hashCode() % 2, city);
                 lng = redata.getJSONObject("location").getDouble("lng");
                 lat = redata.getJSONObject("location").getDouble("lat");
                 desc = redata.getString("address");

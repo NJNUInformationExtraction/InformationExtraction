@@ -94,14 +94,17 @@ public class PlacesExtract {
                 lng = lc.getDouble("lng");
                 lat = lc.getDouble("lat");
             } else {
-                JSONObject redata = ie.canBePlace(desc, city);
-                lng = redata.getJSONObject("location").getDouble("lng");
-                lat = redata.getJSONObject("location").getDouble("lat");
-                if (title.equals("")) {
-                    title = redata.getString("name");
-                    url = new TidyPage("").tidyURL(url);
-                }
-                desc = redata.getString("address");
+                JSONObject redata = ie.canBePlace(desc.hashCode(), city);
+                if (redata != null) {
+                    lng = redata.getJSONObject("location").getDouble("lng");
+                    lat = redata.getJSONObject("location").getDouble("lat");
+                    if (title.equals("")) {
+                        title = redata.getString("name");
+                        url = new TidyPage("").tidyURL(url);
+                    }
+                    desc = redata.getString("address");
+                } else
+                    return false;
             }
             JSONObject data = new JSONObject();
             if (title.equals(""))

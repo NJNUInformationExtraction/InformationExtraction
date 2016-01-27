@@ -33,7 +33,7 @@ public class TestInfoExtractBase {
 
     @Test
     public void testCanBePlace() throws IOException {
-        Assert.assertEquals(true, ie.canBePlace("北京创客空间", "北京"));
+        Assert.assertEquals(true, ie.canBePlace("北京创客空间".hashCode(), "北京"));
     }
 
 }

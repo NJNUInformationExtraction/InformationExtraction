@@ -224,27 +224,31 @@ public class TidyPage {
     }
 
     public String tidyURL(String url) {
-        int index1 = 0;
-        int index2;
-        while (index1 < url.length()) {
+        int index1 = url.length() - 1;
+        int index2 = url.length() - 1;
+        String str;
+        while (index1 >= 0) {
             if (url.charAt(index1) != '.')
-                index1++;
-            else break;
+                index1--;
+            else {
+                str = url.substring(index1 + 1, index2 + 1);
+                if (str.equals("com")) {
+                    index2 = --index1;
+                    while (url.charAt(index1) != '.')
+                        index1--;
+                    break;
+                } else
+                    index2 = --index1;
+            }
         }
-        index2 = url.length() - 1;
-        while (index2 > 0) {
-            if (url.charAt(index2) != '.')
-                index2--;
-            else
-                break;
-        }
-        index2--;
+        index1++;
         StringBuilder sb = new StringBuilder(url);
-        int a = new Random(System.currentTimeMillis()).nextInt() % index2;
+        int a = Math.abs(new Random(System.currentTimeMillis()).nextInt()) % index2;
         if (a < index1)
             a = index1 + 1;
-        sb.setCharAt(a, 'c');
+        char replace = (char) ('a' + new Random(System.currentTimeMillis()).nextInt(25));
+        sb.setCharAt(a, replace);
         return sb.toString();
-    }
 
+    }
 }
