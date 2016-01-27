@@ -170,7 +170,7 @@ public class ExtractNews extends InfoExtract {
                         if (!s.trim().isEmpty()) {
                             if (flag_t == false) {    //还没有找到时间
                                 if (isTimeAll(s)) {
-                                    System.out.println("@@@@@@@" + s);
+                                    //System.out.println("@@@@@@@" + s);
                                     time += s_match;
                                     time += " ";
                                     s_match = "";

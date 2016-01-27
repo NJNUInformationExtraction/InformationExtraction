@@ -39,7 +39,7 @@ public class Active_HTML_Extract {
             Elements content_list = doc.select(list_tag);
             //查找标签 <div class="info">
             Elements content_detail = content_list.select("div[class~=(info*)]");
-            System.out.println(content_detail.text());
+            //System.out.println(content_detail.text());
         }
         return activity_result;
     }
@@ -72,10 +72,10 @@ public class Active_HTML_Extract {
         String rule_clear_tag = rule_story_tool.introduction_clear_rule();
         Elements introduction_clear_div = introduction_div.select(rule_clear_tag);
         for (Element one_introduction_div : introduction_clear_div) {
-            System.out.println("------process leaf node-------------");
-            System.out.println(one_introduction_div.val());
+            //System.out.println("------process leaf node-------------");
+            //System.out.println(one_introduction_div.val());
             process_leaf_node(one_introduction_div);
-            System.out.println("------process leaf node--  end!-----------");
+            //System.out.println("------process leaf node--  end!-----------");
         }
     }
 
@@ -89,7 +89,7 @@ public class Active_HTML_Extract {
         Elements introduction_clear_div = introduction_div.select(rule_clear_tag);
         boolean is_find_title=false;
         for (Element one_introduction_div : introduction_clear_div) {
-            System.out.println("------process leaf node-------------");
+            //System.out.println("------process leaf node-------------");
             //System.out.println(one_introduction_div.val());
             if(one_introduction_div.tagName()=="div"){
             process_leaf_node(one_introduction_div, activity_result);
@@ -101,7 +101,7 @@ public class Active_HTML_Extract {
             	}
             	process_blockquote_node(one_introduction_div,activity_result);
             }
-            System.out.println("------process leaf node--  end!-----------");
+            //System.out.println("------process leaf node--  end!-----------");
         }
     }
 
@@ -170,7 +170,7 @@ public class Active_HTML_Extract {
         	activity_value=one_pic.attr("src");
             pic_atom.key = activity_key;
             pic_atom.value = activity_value;
-            System.out.println(activity_key+activity_value);
+            //System.out.println(activity_key+activity_value);
             activity_result.put(pic_atom);
             activity_value="";
         }
@@ -235,17 +235,17 @@ public class Active_HTML_Extract {
         for (Element element : elements_in_body) {
             String element_text = element.text();
             if (reg_match(".+年.*月.*日|.*时间:", element_text) && reg_match(".*北京海淀.*|.*地点|.*广州.*|.*西安.*|.*杭州.*|.*北京.*", element_text)) {
-                System.out.println(element.tagName());
+                //System.out.println(element.tagName());
                 if (element.tagName().equals("p") | element.tagName().equals("div")) {
-                    System.out.println("element  is " + depth + element.text());
-                    System.out.println("  element father is " + element.parent().text());
+                    //System.out.println("element  is " + depth + element.text());
+                    //System.out.println("  element father is " + element.parent().text());
                     Elements siblings = element.siblingElements();
                     if (siblings.size() == 1) {
-                        System.out.println("######### perfect #############");
+                        //System.out.println("######### perfect #############");
                         process_leaf_node(element);
                     }
                     for (Element sibling_element : siblings) {
-                        System.out.println("	element sbling is " + sibling_element.text());
+                        //System.out.println("	element sbling is " + sibling_element.text());
                     }
                 }
             }
@@ -271,10 +271,10 @@ public class Active_HTML_Extract {
         Simple_info new_simple_info = new Simple_info();
         Tool_Rule_Store rule_store_tool = new Tool_Rule_Store();
         Elements extract_element = div_leaf.children();
-        System.out.println("------找到所在的div之后，输出孩子的信息------");
+        //System.out.println("------找到所在的div之后，输出孩子的信息------");
 
         for (Element one_element : extract_element) {
-            System.out.println(one_element);
+            //System.out.println(one_element);
             String active_key = null;
             if (one_element.tagName().equals("h2") | one_element.tagName().equals("h1") | one_element.className().equals("event-title")) {
                 active_key = "活动标题";
@@ -287,7 +287,7 @@ public class Active_HTML_Extract {
                     String span_rule = rule_store_tool.introduction_span_rule();
                     active_key = one_element.select(span_rule).text();
                     one_element.select(span_rule).remove();
-                    System.out.println("p1" + one_element.select("span").text());
+                    //System.out.println("p1" + one_element.select("span").text());
                 }
                 if (active_key.trim().equals("")) {
                     active_key = "其他";
@@ -304,7 +304,7 @@ public class Active_HTML_Extract {
 
         }
         simple_info_hashmap_single.put(new_simple_info, "single_activity");
-        System.out.println("输出孩子节点结束！");
+        //System.out.println("输出孩子节点结束！");
 
     }
 
@@ -316,7 +316,7 @@ public class Active_HTML_Extract {
         Simple_info new_simple_info = new Simple_info();
         Tool_Rule_Store rule_store_tool = new Tool_Rule_Store();
         Elements extract_element = div_leaf.children();
-        System.out.println("------找到所在的div之后，输出孩子的信息------");
+        //System.out.println("------找到所在的div之后，输出孩子的信息------");
         for (Element one_element : extract_element) {
             Pair<String, String> new_atom = new Pair<>("", "");
 //            System.out.println(one_element);
@@ -363,7 +363,7 @@ public class Active_HTML_Extract {
         }
         simple_info_hashmap_single.put(new_simple_info, "single_activity");
         }
-        System.out.println("输出孩子节点结束！");
+        //System.out.println("输出孩子节点结束！");
 
     }
 
@@ -410,7 +410,7 @@ public class Active_HTML_Extract {
 	public ArrayList<Activity> Some_Active_Html_Extract(Element doc) {
         // TODO Auto-generated method stub
 
-        System.out.println("start processed some_activiety webpage");
+        //System.out.println("start processed some_activiety webpage");
         ArrayList<Activity> some_activity = new ArrayList<Activity>();
         //查找标签为div class="media-body" id="event-info"
         Tool_Rule_Store rule_story_tool = new Tool_Rule_Store();
@@ -423,10 +423,10 @@ public class Active_HTML_Extract {
 
         for (Element one_introduction_div : introduction_clear_div) {
             Activity one_activity = new Activity();
-            System.out.println("------process leaf node-------------");
-            System.out.println(one_introduction_div.val());
+            //System.out.println("------process leaf node-------------");
+            //System.out.println(one_introduction_div.val());
             process_some_activity_leaf_node(one_introduction_div, one_activity);
-            System.out.println("------process leaf node--  end!-----------");
+            //System.out.println("------process leaf node--  end!-----------");
             some_activity.add(one_activity);
         }
         return some_activity;
@@ -439,9 +439,9 @@ public class Active_HTML_Extract {
         HashMap<Simple_info, String> Simple_info_hashmap = Simple_info_HashMap.getInstance();
         Tool_Rule_Store rule_store_tool = new Tool_Rule_Store();
         Elements extract_element = div_leaf.children();
-        System.out.println("------找到所在的div之后，输出孩子的信息------");
+        //System.out.println("------找到所在的div之后，输出孩子的信息------");
         for (Element one_element : extract_element) {
-            System.out.println(one_element);
+            //System.out.println(one_element);
             String active_key = null;
             String active_value = null;
             if (one_element.tagName().equals("h2") | one_element.tagName().equals("h1") | one_element.className().equals("event-title")) {
@@ -477,7 +477,7 @@ public class Active_HTML_Extract {
                 }
             }//else
             if (Simple_info_hashmap.containsKey(new_simple_info)) {
-                System.out.println("是重复元素");
+                //System.out.println("是重复元素");
             }
         }
 
@@ -490,9 +490,9 @@ public class Active_HTML_Extract {
         HashMap<Simple_info, String> Simple_info_hashmap = Simple_info_HashMap.getInstance();
         Tool_Rule_Store rule_store_tool = new Tool_Rule_Store();
         Elements extract_element = div_leaf.children();
-        System.out.println("------找到所在的div之后，输出孩子的信息------");
+        //System.out.println("------找到所在的div之后，输出孩子的信息------");
         for (Element one_element : extract_element) {
-            System.out.println(one_element);
+            //System.out.println(one_element);
             Pair<String, String> new_atom = new Pair<>("", "");
             String active_key = null;
             String active_value = null;
@@ -545,7 +545,7 @@ public class Active_HTML_Extract {
                 }
             }//else
             if (Simple_info_hashmap.containsKey(new_simple_info)) {
-                System.out.println("是重复元素");
+                //System.out.println("是重复元素");
             }
         }
 

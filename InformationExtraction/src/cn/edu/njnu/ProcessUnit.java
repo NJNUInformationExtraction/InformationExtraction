@@ -129,7 +129,7 @@ public class ProcessUnit implements Runnable {
                     if (pid == null)
                         return;
                     else if (pid.startsWith("{")) {
-                        pid = postDataHelper.postIncubator(place);
+                        pid = postDataHelper.postIncubator(pid);
                         if (pid == null)
                             return;
                         else
