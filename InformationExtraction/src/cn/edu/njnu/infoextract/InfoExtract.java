@@ -302,8 +302,13 @@ public abstract class InfoExtract {
                 return null;
         }
         while (true) {
+            String key;
+            if (item == 1 || item == 3)
+                key = "创业";
+            else
+                key = "孵化器";
             String request = "http://api.map.baidu.com/place/v2/search?" +
-                    "q=创业" + "&region=" + city + "&output=json&ak=" + authority
+                    "q=" + key + "&region=" + city + "&output=json&ak=" + authority
                     + "&page_num=" + page;
             String response = getResponseFromRequest(request);
             if (response != null && JSONObject.fromObject(response).getInt("total") != 0)

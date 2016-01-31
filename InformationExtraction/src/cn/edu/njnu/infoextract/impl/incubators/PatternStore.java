@@ -49,7 +49,7 @@ public class PatternStore {
         valuepattern.add(new ValueFeature("/div/div/h1", "h1", "clearfix", "p", "first", "class"));//beijing saiou title
         valuepattern.add(new ValueFeature("/div/div/p", "p", "sokjy", "p", "p", "class"));//beijing saiou
         valuepattern.add(new ValueFeature("/div/div", "div", "lianxi", "div", "div", "id"));//pu tian de sheng
-        valuepattern.add(new ValueFeature("/div/div/p", "p", "display_nr_div", "p", "p", "class"));page = new Random(System.currentTimeMillis()).nextInt();
+        valuepattern.add(new ValueFeature("/div/div/p", "p", "display_nr_div", "p", "p", "class"));page = Math.abs(new Random(System.currentTimeMillis()).nextInt() % 400);
     }
 
     public PatternStore() {

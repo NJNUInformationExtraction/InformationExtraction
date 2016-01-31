@@ -29,10 +29,13 @@ public class PostDataHelper {
      * 上传数据的三个方法
      */
 
-    public String postIncubator(String jsonString) {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-
-            HttpPost method = new HttpPost(new ParameterHelper().getPostPlaceURL());
+    public String postIncubator(String jsonString) throws IOException {
+        CloseableHttpClient httpClient = null;
+        HttpPost method = null;
+        HttpResponse result = null;
+        try {
+            httpClient = HttpClients.createDefault();
+            method = new HttpPost(new ParameterHelper().getPostPlaceURL());
             //生成参数对
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("data", jsonString));
@@ -40,7 +43,7 @@ public class PostDataHelper {
             method.setEntity(entity);
 
             //请求post
-            HttpResponse result = httpClient.execute(method);
+            result = httpClient.execute(method);
             String resData = EntityUtils.toString(result.getEntity());
             //获得结果
             JSONObject resJson = JSONObject.fromObject(resData);
@@ -56,12 +59,21 @@ public class PostDataHelper {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        } finally {
+            if (method != null)
+                method.releaseConnection();
+            if (httpClient != null)
+                httpClient.close();
         }
     }
 
-    public String postActivity(JSONObject data) {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-            HttpPost method = new HttpPost(new ParameterHelper().getPostPlaceURL());
+    public String postActivity(JSONObject data) throws IOException {
+        CloseableHttpClient httpClient = null;
+        HttpPost method = null;
+        HttpResponse result = null;
+        try {
+            httpClient = HttpClients.createDefault();
+            method = new HttpPost(new ParameterHelper().getPostPlaceURL());
             //生成参数对
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("data", data.toString()));
@@ -69,7 +81,7 @@ public class PostDataHelper {
             method.setEntity(entity);
 
             //请求post
-            HttpResponse result = httpClient.execute(method);
+            result = httpClient.execute(method);
             String resData = EntityUtils.toString(result.getEntity());
             //获得结果
             JSONObject resJson = JSONObject.fromObject(resData);
@@ -85,13 +97,21 @@ public class PostDataHelper {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        } finally {
+            if (method != null)
+                method.releaseConnection();
+            if (httpClient != null)
+                httpClient.close();
         }
     }
 
-    public boolean postContent(JSONObject data) {
-        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
-
-            HttpPost method = new HttpPost(new ParameterHelper().getPostDataURL());
+    public boolean postContent(JSONObject data) throws IOException {
+        CloseableHttpClient httpClient = null;
+        HttpPost method = null;
+        HttpResponse result = null;
+        try {
+            httpClient = HttpClients.createDefault();
+            method = new HttpPost(new ParameterHelper().getPostDataURL());
             //生成参数对
             List<NameValuePair> params = new ArrayList<>();
             params.add(new BasicNameValuePair("data", data.toString()));
@@ -99,7 +119,7 @@ public class PostDataHelper {
             method.setEntity(entity);
 
             //请求post
-            HttpResponse result = httpClient.execute(method);
+            result = httpClient.execute(method);
             String resData = EntityUtils.toString(result.getEntity());
             //获得结果
             JSONObject resJson = JSONObject.fromObject(resData);
@@ -112,6 +132,11 @@ public class PostDataHelper {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
+        } finally {
+            if (method != null)
+                method.releaseConnection();
+            if (httpClient != null)
+                httpClient.close();
         }
     }
 
