@@ -119,6 +119,7 @@ public class ExtractModule {
             }
         }
     }
+
 /*
     public static String getHtml(File file) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(

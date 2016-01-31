@@ -169,15 +169,15 @@ public class ProcessUnit implements Runnable {
         String url;
         while (html.charAt(index) != '<')
             index++;
-        //String head = html.substring(0, index);
-        //if (head.startsWith("flag"))
-        //   return;
-        // else {
-        url = html.substring(0, index);
-        //    html = "flag " + html;
-        //}
+        String head = html.substring(0, index);
+        if (head.startsWith("flag"))
+            return;
+        else {
+            url = html.substring(0, index);
+            html = "flag " + html;
+        }
         // 将标记flag的html重新写入页面文件中
-        //writeHtml(f, html);
+        writeHtml(f, html);
 
         List<Extractable> info = ie.extractInformation(html);
         if (info != null && info.size() > 0) {
